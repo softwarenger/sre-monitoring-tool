@@ -1,0 +1,81 @@
+<div class="metrics-container">
+  <div class="metrics-header">
+    <h1>Metrik Görselleştirme</h1>
+  </div>
+
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <div class="filters">
+        <mat-form-field>
+          <mat-label>Servis</mat-label>
+          <mat-select [(ngModel)]="selectedService" (selectionChange)="onServiceChange()">
+            <mat-option *ngFor="let service of services" [value]="service.id">
+              {{ service.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Metrik Tipi</mat-label>
+          <mat-select [(ngModel)]="selectedMetricType" (selectionChange)="onMetricTypeChange()">
+            <mat-option *ngFor="let type of metricTypes" [value]="type.value">
+              {{ type.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Zaman Aralığı</mat-label>
+          <mat-select [(ngModel)]="selectedHours" (selectionChange)="onHoursChange()">
+            <mat-option *ngFor="let hours of hoursOptions" [value]="hours">
+              Son {{ hours }} Saat
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="exportMetrics()">
+          <mat-icon>download</mat-icon>
+          Dışa Aktar
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="chart-card">
+    <mat-card-content>
+      <app-chart-widget
+        [title]="chartTitle"
+        [data]="chartData"
+        type="line"
+        [color]="chartColor"
+        [label]="chartLabel">
+      </app-chart-widget>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="metrics-table-card" *ngIf="metrics.length > 0">
+    <mat-card-header>
+      <mat-card-title>Metrik Verileri</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Zaman</th>
+            <th>Değer</th>
+            <th>Birim</th>
+            <th>Servis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let metric of metrics.slice(-20)">
+            <td>{{ metric.timestamp | date:'short' }}</td>
+            <td>{{ metric.value }}</td>
+            <td>{{ metric.unit }}</td>
+            <td>{{ metric.serviceId || 'N/A' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

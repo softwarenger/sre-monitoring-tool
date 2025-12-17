@@ -1,0 +1,17 @@
+<mat-card class="metric-card" [class]="'metric-' + color">
+  <mat-card-content>
+    <div class="metric-header">
+      <div class="metric-icon">
+        <mat-icon [color]="color">{{ icon }}</mat-icon>
+      </div>
+      <div class="metric-info">
+        <h3 class="metric-title">{{ title }}</h3>
+        <p class="metric-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+      </div>
+    </div>
+    <div class="metric-value">
+      <span class="value">{{ displayValue }}</span>
+      <mat-icon *ngIf="trend" [color]="trendColor" class="trend-icon">{{ trendIcon }}</mat-icon>
+    </div>
+  </mat-card-content>
+</mat-card>

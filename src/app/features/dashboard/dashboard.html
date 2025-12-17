@@ -1,0 +1,150 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>SRE Operasyonel İzleme Dashboard</h1>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Yenile
+    </button>
+  </div>
+
+  <!-- System Metrics Cards -->
+  <mat-grid-list cols="4" rowHeight="150px" gutterSize="16px" *ngIf="systemStats">
+    <mat-grid-tile>
+      <app-metric-card
+        title="CPU Kullanımı"
+        [value]="systemStats.cpu.usage"
+        unit="%"
+        icon="memory"
+        [color]="systemStats.cpu.usage > 80 ? 'warn' : 'primary'">
+      </app-metric-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <app-metric-card
+        title="Bellek Kullanımı"
+        [value]="systemStats.memory.usagePercent"
+        unit="%"
+        icon="storage"
+        [color]="systemStats.memory.usagePercent > 85 ? 'warn' : 'primary'">
+      </app-metric-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <app-metric-card
+        title="Disk Kullanımı"
+        [value]="systemStats.disk.usagePercent"
+        unit="%"
+        icon="hard_drive"
+        [color]="systemStats.disk.usagePercent > 80 ? 'warn' : 'primary'">
+      </app-metric-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <app-metric-card
+        title="Aktif Servisler"
+        [value]="healthyServicesCount"
+        unit=""
+        icon="check_circle"
+        color="primary"
+        [subtitle]="'Toplam: ' + services.length">
+      </app-metric-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <!-- Service Status Summary -->
+  <mat-card class="status-summary">
+    <mat-card-header>
+      <mat-card-title>Servis Durumu Özeti</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="status-cards">
+        <div class="status-item healthy">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <div class="status-count">{{ healthyServicesCount }}</div>
+            <div class="status-label">Sağlıklı</div>
+          </div>
+        </div>
+        <div class="status-item degraded">
+          <mat-icon>warning</mat-icon>
+          <div>
+            <div class="status-count">{{ degradedServicesCount }}</div>
+            <div class="status-label">Bozulmuş</div>
+          </div>
+        </div>
+        <div class="status-item down">
+          <mat-icon>error</mat-icon>
+          <div>
+            <div class="status-count">{{ downServicesCount }}</div>
+            <div class="status-label">Çalışmıyor</div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Charts -->
+  <mat-grid-list cols="2" rowHeight="350px" gutterSize="16px">
+    <mat-grid-tile>
+      <app-chart-widget
+        title="CPU Kullanımı (Son 1 Saat)"
+        [data]="cpuMetrics"
+        type="line"
+        color="#3f51b5"
+        label="CPU %">
+      </app-chart-widget>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <app-chart-widget
+        title="Bellek Kullanımı (Son 1 Saat)"
+        [data]="memoryMetrics"
+        type="line"
+        color="#f44336"
+        label="Memory %">
+      </app-chart-widget>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <!-- Services List -->
+  <mat-card class="services-card">
+    <mat-card-header>
+      <mat-card-title>Servisler</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let service of services">
+          <div class="service-item">
+            <div class="service-info">
+              <h3>{{ service.name }}</h3>
+              <p>{{ service.endpoint }}</p>
+            </div>
+            <div class="service-status">
+              <app-health-status [status]="service.status"></app-health-status>
+              <span class="response-time" *ngIf="service.responseTime">
+                {{ service.responseTime }}ms
+              </span>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Alerts -->
+  <mat-card class="alerts-card" *ngIf="alerts.length > 0">
+    <mat-card-header>
+      <mat-card-title>Uyarılar</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let alert of alerts">
+          <mat-icon [color]="alert.severity === 'critical' ? 'warn' : 'accent'">
+            {{ alert.severity === 'critical' ? 'error' : 'warning' }}
+          </mat-icon>
+          <div class="alert-content">
+            <div class="alert-message">{{ alert.message }}</div>
+            <div class="alert-time">{{ alert.timestamp | date:'short' }}</div>
+          </div>
+          <mat-chip *ngIf="alert.resolved" color="primary">Çözüldü</mat-chip>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

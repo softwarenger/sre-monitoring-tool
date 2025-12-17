@@ -1,0 +1,42 @@
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+
+  .status-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .status-text {
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  &.size-small {
+    .status-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .status-text {
+      font-size: 10px;
+    }
+  }
+
+  &.size-large {
+    .status-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .status-text {
+      font-size: 14px;
+    }
+  }
+}

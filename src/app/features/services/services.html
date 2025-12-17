@@ -1,0 +1,155 @@
+<div class="services-container">
+  <div class="services-header">
+    <h1>Servis İzleme</h1>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Yenile
+    </button>
+  </div>
+
+  <mat-card class="services-table-card">
+    <mat-card-header>
+      <mat-card-title>Tüm Servisler</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="services" class="services-table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Servis Adı</th>
+          <td mat-cell *matCellDef="let service">
+            <div class="service-name">
+              <mat-icon>cloud</mat-icon>
+              <span>{{ service.name }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Durum</th>
+          <td mat-cell *matCellDef="let service">
+            <app-health-status [status]="service.status"></app-health-status>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="responseTime">
+          <th mat-header-cell *matHeaderCellDef>Yanıt Süresi</th>
+          <td mat-cell *matCellDef="let service">
+            {{ service.responseTime ? service.responseTime + 'ms' : 'N/A' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="uptime">
+          <th mat-header-cell *matHeaderCellDef>Uptime</th>
+          <td mat-cell *matCellDef="let service">
+            {{ service.uptime ? service.uptime.toFixed(2) + '%' : 'N/A' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="version">
+          <th mat-header-cell *matHeaderCellDef>Versiyon</th>
+          <td mat-cell *matCellDef="let service">
+            {{ service.version || 'N/A' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>İşlemler</th>
+          <td mat-cell *matCellDef="let service">
+            <button mat-icon-button (click)="selectService(service)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="service-details-card" *ngIf="selectedService">
+    <mat-card-header>
+      <mat-card-title>{{ selectedService.name }} - Detaylar</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="service-details">
+        <div class="detail-section">
+          <h3>Genel Bilgiler</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="label">Durum:</span>
+              <app-health-status [status]="selectedService.status"></app-health-status>
+            </div>
+            <div class="detail-item">
+              <span class="label">Endpoint:</span>
+              <span>{{ selectedService.endpoint || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Versiyon:</span>
+              <span>{{ selectedService.version || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Uptime:</span>
+              <span>{{ selectedService.uptime ? selectedService.uptime.toFixed(2) + '%' : 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Yanıt Süresi:</span>
+              <span>{{ selectedService.responseTime ? selectedService.responseTime + 'ms' : 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Son Kontrol:</span>
+              <span>{{ selectedService.lastCheck | date:'short' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedService.details">
+          <h3>Metrikler</h3>
+          <div class="metrics-grid">
+            <app-metric-card
+              title="CPU"
+              [value]="selectedService.details.cpu || 0"
+              unit="%"
+              icon="memory"
+              [color]="(selectedService.details.cpu || 0) > 80 ? 'warn' : 'primary'">
+            </app-metric-card>
+            <app-metric-card
+              title="Bellek"
+              [value]="selectedService.details.memory || 0"
+              unit="%"
+              icon="storage"
+              [color]="(selectedService.details.memory || 0) > 85 ? 'warn' : 'primary'">
+            </app-metric-card>
+            <app-metric-card
+              title="Disk"
+              [value]="selectedService.details.disk || 0"
+              unit="%"
+              icon="hard_drive"
+              [color]="(selectedService.details.disk || 0) > 80 ? 'warn' : 'primary'">
+            </app-metric-card>
+            <app-metric-card
+              title="Hata Oranı"
+              [value]="selectedService.details.errorRate || 0"
+              unit="%"
+              icon="error"
+              [color]="(selectedService.details.errorRate || 0) > 2 ? 'warn' : 'primary'">
+            </app-metric-card>
+            <app-metric-card
+              title="İstek/Saniye"
+              [value]="selectedService.details.requestsPerSecond || 0"
+              unit="req/s"
+              icon="speed"
+              color="primary">
+            </app-metric-card>
+            <app-metric-card
+              title="Aktif Bağlantılar"
+              [value]="selectedService.details.activeConnections || 0"
+              unit=""
+              icon="link"
+              color="primary">
+            </app-metric-card>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

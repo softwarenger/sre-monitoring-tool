@@ -1,0 +1,11 @@
+.chart-widget {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}

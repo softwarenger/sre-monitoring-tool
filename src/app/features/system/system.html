@@ -1,0 +1,220 @@
+<div class="system-container">
+  <div class="system-header">
+    <h1>Sistem İzleme</h1>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Yenile
+    </button>
+  </div>
+
+  <div *ngIf="systemStats">
+    <!-- System Metrics Cards -->
+    <mat-grid-list cols="4" rowHeight="150px" gutterSize="16px" class="metrics-grid">
+      <mat-grid-tile>
+        <app-metric-card
+          title="CPU Kullanımı"
+          [value]="systemStats.cpu.usage"
+          unit="%"
+          icon="memory"
+          [color]="systemStats.cpu.usage > 80 ? 'warn' : 'primary'"
+          [subtitle]="systemStats.cpu.cores + ' Core'">
+        </app-metric-card>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <app-metric-card
+          title="Bellek Kullanımı"
+          [value]="systemStats.memory.usagePercent"
+          unit="%"
+          icon="storage"
+          [color]="systemStats.memory.usagePercent > 85 ? 'warn' : 'primary'"
+          [subtitle]="formatBytes(systemStats.memory.used) + ' / ' + formatBytes(systemStats.memory.total)">
+        </app-metric-card>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <app-metric-card
+          title="Disk Kullanımı"
+          [value]="systemStats.disk.usagePercent"
+          unit="%"
+          icon="hard_drive"
+          [color]="systemStats.disk.usagePercent > 80 ? 'warn' : 'primary'"
+          [subtitle]="formatBytes(systemStats.disk.used) + ' / ' + formatBytes(systemStats.disk.total)">
+        </app-metric-card>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <app-metric-card
+          title="Aktif İşlemler"
+          [value]="systemStats.cpu.processes"
+          unit=""
+          icon="settings"
+          color="primary">
+        </app-metric-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <!-- Detailed Stats -->
+    <mat-card class="cpu-details-card">
+      <mat-card-header>
+        <mat-card-title>CPU Detayları</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">Kullanım:</span>
+            <mat-progress-bar mode="determinate" [value]="systemStats.cpu.usage"></mat-progress-bar>
+            <span class="stat-value">{{ systemStats.cpu.usage.toFixed(1) }}%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Çekirdek Sayısı:</span>
+            <span class="stat-value">{{ systemStats.cpu.cores }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Load Average (1m):</span>
+            <span class="stat-value">{{ systemStats.cpu.loadAverage[0].toFixed(2) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Load Average (5m):</span>
+            <span class="stat-value">{{ systemStats.cpu.loadAverage[1].toFixed(2) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Load Average (15m):</span>
+            <span class="stat-value">{{ systemStats.cpu.loadAverage[2].toFixed(2) }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="memory-details-card">
+      <mat-card-header>
+        <mat-card-title>Bellek Detayları</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">Toplam:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.memory.total) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Kullanılan:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.memory.used) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Boş:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.memory.free) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Önbellek:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.memory.cached) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Kullanım Oranı:</span>
+            <mat-progress-bar mode="determinate" [value]="systemStats.memory.usagePercent"></mat-progress-bar>
+            <span class="stat-value">{{ systemStats.memory.usagePercent.toFixed(1) }}%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="disk-details-card">
+      <mat-card-header>
+        <mat-card-title>Disk Detayları</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">Toplam:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.disk.total) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Kullanılan:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.disk.used) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Boş:</span>
+            <span class="stat-value">{{ formatBytes(systemStats.disk.free) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Okuma (Bytes):</span>
+            <span class="stat-value">{{ formatBytes(systemStats.disk.readBytes) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Yazma (Bytes):</span>
+            <span class="stat-value">{{ formatBytes(systemStats.disk.writeBytes) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Okuma İşlemleri:</span>
+            <span class="stat-value">{{ systemStats.disk.readOps }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Yazma İşlemleri:</span>
+            <span class="stat-value">{{ systemStats.disk.writeOps }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="network-details-card">
+      <mat-card-header>
+        <mat-card-title>Ağ Detayları</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">Gelen (Bytes):</span>
+            <span class="stat-value">{{ formatBytes(systemStats.network.bytesIn) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Giden (Bytes):</span>
+            <span class="stat-value">{{ formatBytes(systemStats.network.bytesOut) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Gelen Paketler:</span>
+            <span class="stat-value">{{ systemStats.network.packetsIn }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Giden Paketler:</span>
+            <span class="stat-value">{{ systemStats.network.packetsOut }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Gelen Hatalar:</span>
+            <span class="stat-value" [class.error]="systemStats.network.errorsIn > 0">{{ systemStats.network.errorsIn }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Giden Hatalar:</span>
+            <span class="stat-value" [class.error]="systemStats.network.errorsOut > 0">{{ systemStats.network.errorsOut }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Charts -->
+    <mat-grid-list cols="3" rowHeight="350px" gutterSize="16px" class="charts-grid">
+      <mat-grid-tile>
+        <app-chart-widget
+          title="CPU Kullanımı"
+          [data]="cpuHistory"
+          type="line"
+          color="#3f51b5"
+          label="CPU %">
+        </app-chart-widget>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <app-chart-widget
+          title="Bellek Kullanımı"
+          [data]="memoryHistory"
+          type="line"
+          color="#f44336"
+          label="Memory %">
+        </app-chart-widget>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <app-chart-widget
+          title="Disk Kullanımı"
+          [data]="diskHistory"
+          type="line"
+          color="#ff9800"
+          label="Disk %">
+        </app-chart-widget>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+<mat-chip [class]="chipClass" [color]="statusColor">
+  <mat-icon *ngIf="showIcon" class="status-icon">{{ statusIcon }}</mat-icon>
+  <span *ngIf="showText" class="status-text">{{ statusText }}</span>
+</mat-chip>
