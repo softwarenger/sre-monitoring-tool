@@ -6,8 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
-import { Subject, takeUntil, combineLatest, interval, startWith } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subject, takeUntil, combineLatest, interval, startWith, Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { MonitoringService } from '../../core/services/monitoring.service';
 import { MetricsService } from '../../core/services/metrics.service';
 import { SystemStats } from '../../core/models/system-stats.model';
@@ -97,16 +97,16 @@ export class Dashboard implements OnInit, OnDestroy {
       this.metricsService.getMemoryMetrics(undefined, 1),
       this.metricsService.getHttpResponseTimeMetrics(undefined, 1)
     ]).pipe(
-      tap(([cpuMetrics, memoryMetrics, httpMetrics]) => {
-        this.cpuMetrics = cpuMetrics.map(m => ({
+      tap(([cpuMetrics, memoryMetrics, httpMetrics]: [any, any, any]) => {
+        this.cpuMetrics = cpuMetrics.map((m: { timestamp: any; value: any; }) => ({
           timestamp: m.timestamp,
           value: m.value
         }));
-        this.memoryMetrics = memoryMetrics.map(m => ({
+        this.memoryMetrics = memoryMetrics.map((m: { timestamp: any; value: any; }) => ({
           timestamp: m.timestamp,
           value: m.value
         }));
-        this.httpResponseTimeMetrics = httpMetrics.map(m => ({
+        this.httpResponseTimeMetrics = httpMetrics.map((m: { timestamp: any; value: any; }) => ({
           timestamp: m.timestamp,
           value: m.value
         }));

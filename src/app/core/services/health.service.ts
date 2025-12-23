@@ -81,7 +81,7 @@ export class HealthService {
 
   getServiceStatusCount(): Observable<{ healthy: number; degraded: number; down: number; unknown: number }> {
     return new Observable((observer: { next: (arg0: { healthy: any; degraded: any; down: any; unknown: any; }) => void; }) => {
-      this.services$.subscribe((services: { filter: (arg0: { (s: any): boolean; (s: any): boolean; (s: any): boolean; (s: any): boolean; }) => { (): any; new(): any; length: any; }; }) => {
+      this.services$.subscribe((services: ServiceHealth[]) => {
         const counts = {
           healthy: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.HEALTHY).length,
           degraded: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.DEGRADED).length,
