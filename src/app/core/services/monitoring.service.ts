@@ -54,19 +54,20 @@ export class MonitoringService {
   }
 
   refreshData(): void {
+    console.log('Refreshing data');
     // Load system stats
     this.mockDataService.getSystemStats().subscribe(stats => {
-      this.systemStatsSubject.next(stats);
+      this.systemStatsSubject.next({ ...stats });
     });
 
     // Load services
     this.mockDataService.getServiceHealth().subscribe(services => {
-      this.servicesSubject.next(services);
+      this.servicesSubject.next([...services]);
     });
 
     // Load alerts
     this.mockDataService.getAlerts().subscribe(alerts => {
-      this.alertsSubject.next(alerts);
+      this.alertsSubject.next([...alerts]);
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -6,7 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
-import { Subject, takeUntil, combineLatest } from 'rxjs';
+import { Subject, takeUntil, combineLatest, interval, startWith } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { MonitoringService } from '../../core/services/monitoring.service';
 import { MetricsService } from '../../core/services/metrics.service';
 import { SystemStats } from '../../core/models/system-stats.model';
@@ -47,7 +48,8 @@ export class Dashboard implements OnInit, OnDestroy {
 
   constructor(
     private monitoringService: MonitoringService,
-    private metricsService: MetricsService
+    private metricsService: MetricsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -56,13 +58,16 @@ export class Dashboard implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(stats => {
         this.systemStats = stats;
+        this.cdr.markForCheck();
       });
 
     // Subscribe to services
     this.monitoringService.getServices()
       .pipe(takeUntil(this.destroy$))
       .subscribe(services => {
+        console.log('Services received in dashboard', services);
         this.services = services;
+        this.cdr.markForCheck();
       });
 
     // Subscribe to alerts
@@ -70,10 +75,15 @@ export class Dashboard implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(alerts => {
         this.alerts = alerts;
+        this.cdr.markForCheck();
       });
 
-    // Load metrics for charts
-    this.loadMetrics();
+    // Load metrics for charts with polling
+    interval(5000).pipe(
+      startWith(0),
+      switchMap(() => this.loadMetrics()),
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -81,36 +91,28 @@ export class Dashboard implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadMetrics(): void {
-    // Load CPU metrics
-    this.metricsService.getCpuMetrics(undefined, 1)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(metrics => {
-        this.cpuMetrics = metrics.map(m => ({
+  private loadMetrics(): Observable<any> {
+    return combineLatest([
+      this.metricsService.getCpuMetrics(undefined, 1),
+      this.metricsService.getMemoryMetrics(undefined, 1),
+      this.metricsService.getHttpResponseTimeMetrics(undefined, 1)
+    ]).pipe(
+      tap(([cpuMetrics, memoryMetrics, httpMetrics]) => {
+        this.cpuMetrics = cpuMetrics.map(m => ({
           timestamp: m.timestamp,
           value: m.value
         }));
-      });
-
-    // Load Memory metrics
-    this.metricsService.getMemoryMetrics(undefined, 1)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(metrics => {
-        this.memoryMetrics = metrics.map(m => ({
+        this.memoryMetrics = memoryMetrics.map(m => ({
           timestamp: m.timestamp,
           value: m.value
         }));
-      });
-
-    // Load HTTP Response Time metrics
-    this.metricsService.getHttpResponseTimeMetrics(undefined, 1)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(metrics => {
-        this.httpResponseTimeMetrics = metrics.map(m => ({
+        this.httpResponseTimeMetrics = httpMetrics.map(m => ({
           timestamp: m.timestamp,
           value: m.value
         }));
-      });
+        this.cdr.markForCheck();
+      })
+    );
   }
 
   refresh(): void {

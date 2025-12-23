@@ -129,6 +129,7 @@ export class MockDataService {
   }
 
   private updateMockData(): void {
+    console.log('Mock data updating...');
     // Update service health with slight variations
     this.services.forEach(service => {
       if (service.status !== HealthStatus.DOWN && service.details) {

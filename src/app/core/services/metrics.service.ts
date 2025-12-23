@@ -15,28 +15,16 @@ export class MetricsService {
   constructor(private mockDataService: MockDataService) {}
 
 getMetrics(serviceId?: string, type?: MetricType, hours: number = 1): Observable<Metric[]> {
-  const cacheKey = `${serviceId ?? 'all'}-${type ?? 'all'}-${hours}`;
-
-  const cached = this.metricsCache.get(cacheKey);
-  if (cached) {
-    // cache hit
-    this.metricsSubject.next(cached);
-    return of(cached);
+    // Always fetch fresh data for live updates
+    return this.mockDataService.getMetrics(serviceId, type, hours).pipe(
+      tap((metrics: Metric[]) => {
+        this.metricsSubject.next(metrics);
+      }),
+      catchError(err => {
+        return throwError(() => err);
+      })
+    );
   }
-
-  // cache miss -> fetch
-  return this.mockDataService.getMetrics(serviceId, type, hours).pipe(
-    tap((metrics: Metric[]) => {
-      this.metricsCache.set(cacheKey, metrics);
-      this.metricsSubject.next(metrics);
-    }),
-    catchError(err => {
-      // İstersen burada bir error state de set edebilirsin
-      return throwError(() => err);
-    })
-  );
-}
-
  getMetricTimeSeries(
   serviceId: string,
   type: MetricType,
