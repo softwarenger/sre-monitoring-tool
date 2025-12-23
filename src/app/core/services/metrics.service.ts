@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError, catchError, tap, of, map } from 'rxjs';
 import { MockDataService } from '../../mock-api/mock-data.service';
 import { Metric, MetricType, MetricDataPoint } from '../models/metric.model';
 import { ServiceMetrics } from '../models/service-health.model';
@@ -14,56 +14,58 @@ export class MetricsService {
 
   constructor(private mockDataService: MockDataService) {}
 
-  getMetrics(serviceId?: string, type?: MetricType, hours: number = 1): Observable<Metric[]> {
-    const cacheKey = `${serviceId || 'all'}-${type || 'all'}-${hours}`;
-    
-    // Return cached if available
-    if (this.metricsCache.has(cacheKey)) {
-      const cached = this.metricsCache.get(cacheKey)!;
-      this.metricsSubject.next(cached);
-      return new Observable(observer => {
-        observer.next(cached);
-        observer.complete();
-      });
-    }
+getMetrics(serviceId?: string, type?: MetricType, hours: number = 1): Observable<Metric[]> {
+  const cacheKey = `${serviceId ?? 'all'}-${type ?? 'all'}-${hours}`;
 
-    // Fetch new data
-    return new Observable(observer => {
-      this.mockDataService.getMetrics(serviceId, type, hours).subscribe(metrics => {
-        this.metricsCache.set(cacheKey, metrics);
-        this.metricsSubject.next(metrics);
-        observer.next(metrics);
-        observer.complete();
-      });
-    });
+  const cached = this.metricsCache.get(cacheKey);
+  if (cached) {
+    // cache hit
+    this.metricsSubject.next(cached);
+    return of(cached);
   }
 
-  getMetricTimeSeries(serviceId: string, type: MetricType, hours: number = 1): Observable<MetricDataPoint[]> {
-    return new Observable(observer => {
-      this.getMetrics(serviceId, type, hours).subscribe(metrics => {
-        const timeSeries: MetricDataPoint[] = metrics.map(m => ({
-          timestamp: m.timestamp,
-          value: m.value
-        }));
-        observer.next(timeSeries);
-        observer.complete();
-      });
-    });
-  }
+  // cache miss -> fetch
+  return this.mockDataService.getMetrics(serviceId, type, hours).pipe(
+    tap((metrics: Metric[]) => {
+      this.metricsCache.set(cacheKey, metrics);
+      this.metricsSubject.next(metrics);
+    }),
+    catchError(err => {
+      // İstersen burada bir error state de set edebilirsin
+      return throwError(() => err);
+    })
+  );
+}
+
+ getMetricTimeSeries(
+  serviceId: string,
+  type: MetricType,
+  hours: number = 1
+): Observable<MetricDataPoint[]> {
+  return this.getMetrics(serviceId, type, hours).pipe(
+    map((metrics: any[]) =>
+      metrics.map(m => ({
+        timestamp: m.timestamp,
+        value: m.value
+      }))
+    )
+  );
+}
 
   getServiceMetrics(serviceId: string): Observable<ServiceMetrics> {
     return this.mockDataService.getServiceMetrics(serviceId);
   }
 
-  getLatestMetric(serviceId: string, type: MetricType): Observable<Metric | null> {
-    return new Observable(observer => {
-      this.getMetrics(serviceId, type, 1).subscribe(metrics => {
-        const latest = metrics.length > 0 ? metrics[metrics.length - 1] : null;
-        observer.next(latest);
-        observer.complete();
-      });
-    });
-  }
+  getLatestMetric(
+  serviceId: string,
+  type: MetricType
+): Observable<Metric | null> {
+  return this.getMetrics(serviceId, type, 1).pipe(
+    map(metrics =>
+      metrics.length > 0 ? metrics[metrics.length - 1] : null
+    )
+  );
+}
 
   clearCache(): void {
     this.metricsCache.clear();

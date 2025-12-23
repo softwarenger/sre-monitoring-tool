@@ -20,13 +20,13 @@ export class HealthService {
   }
 
   private loadServices(): void {
-    this.mockDataService.getServiceHealth().subscribe(services => {
+    this.mockDataService.getServiceHealth().subscribe((services: any) => {
       this.servicesSubject.next(services);
     });
   }
 
   private loadAlerts(): void {
-    this.mockDataService.getAlerts().subscribe(alerts => {
+    this.mockDataService.getAlerts().subscribe((alerts: any) => {
       this.alertsSubject.next(alerts);
     });
   }
@@ -48,27 +48,27 @@ export class HealthService {
   }
 
   getHealthyServices(): Observable<ServiceHealth[]> {
-    return new Observable(observer => {
-      this.services$.subscribe(services => {
-        const healthy = services.filter(s => s.status === HealthStatus.HEALTHY);
+    return new Observable((observer: { next: (arg0: any) => void; }) => {
+      this.services$.subscribe((services: any[]) => {
+        const healthy = services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.HEALTHY);
         observer.next(healthy);
       });
     });
   }
 
   getDegradedServices(): Observable<ServiceHealth[]> {
-    return new Observable(observer => {
-      this.services$.subscribe(services => {
-        const degraded = services.filter(s => s.status === HealthStatus.DEGRADED);
+    return new Observable((observer: { next: (arg0: any) => void; }) => {
+      this.services$.subscribe((services: any[]) => {
+        const degraded = services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.DEGRADED);
         observer.next(degraded);
       });
     });
   }
 
   getDownServices(): Observable<ServiceHealth[]> {
-    return new Observable(observer => {
-      this.services$.subscribe(services => {
-        const down = services.filter(s => s.status === HealthStatus.DOWN);
+    return new Observable((observer: { next: (arg0: any) => void; }) => {
+      this.services$.subscribe((services: any[]) => {
+        const down = services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.DOWN);
         observer.next(down);
       });
     });
@@ -80,13 +80,13 @@ export class HealthService {
   }
 
   getServiceStatusCount(): Observable<{ healthy: number; degraded: number; down: number; unknown: number }> {
-    return new Observable(observer => {
-      this.services$.subscribe(services => {
+    return new Observable((observer: { next: (arg0: { healthy: any; degraded: any; down: any; unknown: any; }) => void; }) => {
+      this.services$.subscribe((services: { filter: (arg0: { (s: any): boolean; (s: any): boolean; (s: any): boolean; (s: any): boolean; }) => { (): any; new(): any; length: any; }; }) => {
         const counts = {
-          healthy: services.filter(s => s.status === HealthStatus.HEALTHY).length,
-          degraded: services.filter(s => s.status === HealthStatus.DEGRADED).length,
-          down: services.filter(s => s.status === HealthStatus.DOWN).length,
-          unknown: services.filter(s => s.status === HealthStatus.UNKNOWN).length
+          healthy: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.HEALTHY).length,
+          degraded: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.DEGRADED).length,
+          down: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.DOWN).length,
+          unknown: services.filter((s: { status: HealthStatus; }) => s.status === HealthStatus.UNKNOWN).length
         };
         observer.next(counts);
       });
