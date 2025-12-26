@@ -1,0 +1,80 @@
+<div class="profile-container">
+  <div class="profile-grid">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title>Profil Bilgileri</mat-card-title>
+        <mat-card-subtitle>Hesap bilgilerinizi güncelleyin</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="saveProfile()" class="profile-form">
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Kullanıcı Adı</mat-label>
+              <input matInput [value]="username" disabled>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Ad Soyad</mat-label>
+              <input matInput [(ngModel)]="fullName" name="fullName" placeholder="Adınız ve soyadınız">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>E-posta</mat-label>
+              <input matInput [(ngModel)]="email" name="email" type="email" placeholder="ornek@email.com">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Avatar URL</mat-label>
+              <input matInput [(ngModel)]="avatarUrl" name="avatarUrl" placeholder="https://...">
+            </mat-form-field>
+          </div>
+
+          <div class="button-group">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              Kaydet
+            </button>
+            <button mat-stroked-button type="button" (click)="openPreferences()">
+              <mat-icon>settings</mat-icon>
+              Tercihler
+            </button>
+          </div>
+
+          <div class="message" *ngIf="success">
+            <mat-icon>check_circle</mat-icon>
+            {{ success }}
+          </div>
+          <div class="error" *ngIf="error">
+            <mat-icon>error</mat-icon>
+            {{ error }}
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="password-card">
+      <mat-card-header>
+        <mat-card-title>Şifre Değiştir</mat-card-title>
+        <mat-card-subtitle>Hesabınızı güvenli tutun</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="changePassword()" class="password-form">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Eski Şifre</mat-label>
+            <input matInput [(ngModel)]="oldPassword" name="oldPassword" type="password">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Yeni Şifre</mat-label>
+            <input matInput [(ngModel)]="newPassword" name="newPassword" type="password">
+          </mat-form-field>
+
+          <button mat-raised-button color="accent" type="submit" class="full-width">
+            <mat-icon>vpn_key</mat-icon>
+            Şifreyi Güncelle
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

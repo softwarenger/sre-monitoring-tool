@@ -70,6 +70,16 @@ mat-toolbar {
     display: flex;
     align-items: center;
   }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-info {
+    font-size: 14px;
+    margin-right: 10px;
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .main-content {

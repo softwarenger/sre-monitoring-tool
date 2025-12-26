@@ -1,0 +1,31 @@
+<div class="nc-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Bildirim Merkezi</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="actions">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Filtrele/Ara</mat-label>
+          <input matInput [(ngModel)]="query" placeholder="başlık, mesaj veya kaynak" />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" (click)="markAllRead()">Tümünü okundu</button>
+        <button mat-stroked-button color="warn" (click)="clear()">Temizle</button>
+      </div>
+
+      <mat-list>
+        <mat-list-item *ngFor="let n of filtered()" [class.unread]="!n.read">
+          <mat-icon matListIcon [ngClass]="{
+            'info': n.severity==='info', 'warn': n.severity==='warning', 'critical': n.severity==='critical'
+          }">notifications</mat-icon>
+          <div matLine>{{ n.title }}</div>
+          <div matLine class="secondary">{{ n.message }}</div>
+          <div matLine class="meta">{{ n.type }} • {{ n.source || '—' }} • {{ n.timestamp | date:'short' }}</div>
+          <button mat-icon-button (click)="markRead(n.id)" matTooltip="Okundu işaretle">
+            <mat-icon>done</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

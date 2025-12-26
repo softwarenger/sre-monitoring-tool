@@ -1,0 +1,310 @@
+// Modern Dark Theme inspired by VISTA.IO
+// Custom CSS-based dark theme with lavender and coral accents
+
+// Color variables
+$dark-bg: #0d0d0d;
+$dark-bg-secondary: #1a1a1a;
+$dark-bg-tertiary: #121212;
+$dark-text: #f0f0f0;
+$dark-text-secondary: #e0e0e0;
+$dark-text-muted: #b0b0b0;
+
+$primary-accent: #7c5cdb; // Lavender blue
+$secondary-accent: #ff6b5b; // Coral pink
+$primary-accent-light: #8d6de6;
+$secondary-accent-light: #ff7f72;
+
+// Border colors
+$dark-border: rgba(124, 92, 219, 0.15);
+$dark-border-light: rgba(124, 92, 219, 0.2);
+
+// Modern Dark Theme for VISTA.IO-like design
+body.app-theme-dark {
+  background-color: $dark-bg !important;
+  color: $dark-text !important;
+  
+  // Subtle background glow effect
+  background-image: 
+    radial-gradient(circle at 100% 0%, rgba(255, 107, 91, 0.03) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(124, 92, 219, 0.02) 0%, transparent 40%);
+  background-attachment: fixed;
+
+  // === MATERIAL CARDS ===
+  .mat-mdc-card,
+  mat-card {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text !important;
+    border: 1px solid $dark-border !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .mat-mdc-card-header,
+  mat-card-header {
+    border-bottom-color: $dark-border !important;
+  }
+
+  .mat-mdc-card-title,
+  mat-card-title {
+    color: $dark-text !important;
+    font-weight: 600;
+  }
+
+  // === TYPOGRAPHY ===
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+    font-weight: 600;
+  }
+
+  p, span, div, label, a {
+    color: $dark-text-secondary !important;
+  }
+
+  // === TOOLBAR ===
+  .mat-toolbar,
+  mat-toolbar {
+    background-color: $dark-bg !important;
+    color: $dark-text !important;
+    border-bottom: 1px solid rgba(124, 92, 219, 0.15) !important;
+  }
+
+  // === SIDENAV ===
+  .mat-sidenav,
+  mat-sidenav {
+    background-color: $dark-bg-tertiary !important;
+    color: $dark-text !important;
+  }
+
+  // === NAV LIST ===
+  .mdc-list,
+  mat-nav-list {
+    background-color: transparent;
+  }
+
+  .mdc-list-item,
+  mat-list-item,
+  a[mat-list-item] {
+    color: $dark-text-secondary !important;
+
+    &:hover {
+      background-color: rgba(124, 92, 219, 0.08) !important;
+    }
+
+    &.active,
+    &.mat-nav-list-active {
+      background-color: rgba(124, 92, 219, 0.15) !important;
+      color: $primary-accent !important;
+    }
+  }
+
+  // === FORM FIELDS & INPUTS ===
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-label {
+      color: $dark-text-muted !important;
+    }
+  }
+
+  .mdc-text-field,
+  .mat-mdc-text-field-wrapper {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border-color: $dark-border !important;
+  }
+
+  .mdc-text-field__input,
+  input[matInput],
+  textarea[matInput] {
+    color: $dark-text !important;
+    caret-color: $primary-accent !important;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  // === SELECT ===
+  .mdc-select {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: $dark-text !important;
+  }
+
+  .mat-mdc-option {
+    color: $dark-text !important;
+    background-color: $dark-bg-secondary !important;
+
+    &:hover {
+      background-color: rgba(124, 92, 219, 0.1) !important;
+    }
+
+    &.mat-selected {
+      background-color: rgba(124, 92, 219, 0.2) !important;
+      color: $primary-accent !important;
+    }
+  }
+
+  // === MENU ===
+  .mat-mdc-menu-panel {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7) !important;
+    border: 1px solid $dark-border !important;
+  }
+
+  .mat-mdc-menu-item {
+    color: $dark-text !important;
+
+    &:hover {
+      background-color: rgba(124, 92, 219, 0.1) !important;
+    }
+  }
+
+  // === BUTTONS ===
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  button[mat-button],
+  button[mat-raised-button] {
+    color: $dark-text !important;
+
+    &.mat-primary {
+      background-color: $primary-accent !important;
+      color: #ffffff !important;
+
+      &:hover {
+        background-color: $primary-accent-light !important;
+      }
+    }
+
+    &.mat-accent {
+      background-color: $secondary-accent !important;
+      color: #ffffff !important;
+
+      &:hover {
+        background-color: $secondary-accent-light !important;
+      }
+    }
+  }
+
+  // === SLIDE TOGGLE ===
+  .mat-mdc-slide-toggle,
+  mat-slide-toggle {
+    color: $dark-text !important;
+
+    &.mat-checked {
+      .mdc-switch__track {
+        background-color: $primary-accent !important;
+      }
+    }
+  }
+
+  .mdc-switch__track {
+    background-color: rgba(124, 92, 219, 0.3) !important;
+  }
+
+  .mdc-switch__knob {
+    background-color: $dark-text !important;
+  }
+
+  // === TABLE ===
+  .mat-mdc-table {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text-secondary !important;
+  }
+
+  .mdc-data-table__cell,
+  .mdc-data-table__header-cell {
+    color: $dark-text-secondary !important;
+    border-color: $dark-border !important;
+  }
+
+  // === CHECKBOX & RADIO ===
+  .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+    border-color: $primary-accent !important;
+    background-color: $primary-accent !important;
+  }
+
+  // === ICONS ===
+  .mat-icon {
+    color: $dark-text-secondary !important;
+  }
+
+  // === DIVIDER ===
+  .mat-divider {
+    border-color: $dark-border !important;
+  }
+
+  // === CUSTOM COMPONENTS ===
+  .metric-card,
+  .health-status,
+  .chart-widget {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text !important;
+    border: 1px solid $dark-border !important;
+  }
+
+  // === CHARTS ===
+  .chart-container {
+    canvas {
+      filter: invert(0.92) hue-rotate(180deg) brightness(1.05);
+    }
+  }
+
+  // === ACCENT UTILITIES ===
+  .accent-primary {
+    color: $primary-accent !important;
+  }
+
+  .accent-secondary {
+    color: $secondary-accent !important;
+  }
+
+  // === GRADIENT TEXT ===
+  .gradient-text {
+    background: linear-gradient(135deg, $primary-accent 0%, $secondary-accent 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  // === SCROLLBAR ===
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: $dark-bg-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(124, 92, 219, 0.4);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(124, 92, 219, 0.6);
+    }
+  }
+
+  // === PREFERENCES PAGE ===
+  .prefs-container {
+    color: $dark-text;
+  }
+
+  .row-label {
+    color: $dark-text !important;
+  }
+
+  // === SNACKBAR ===
+  .mat-mdc-snack-bar-container {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text !important;
+  }
+
+  // === BADGES ===
+  .mat-badge-content {
+    background-color: $secondary-accent !important;
+  }
+
+  // === TOOLTIP ===
+  .mat-tooltip {
+    background-color: $dark-bg-secondary !important;
+    color: $dark-text !important;
+  }
+}

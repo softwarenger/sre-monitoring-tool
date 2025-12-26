@@ -1,0 +1,43 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <h2>SRE Monitoring - Kayıt Ol</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="register()" class="register-form">
+        <div *ngIf="error" class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ error }}
+        </div>
+
+        <div *ngIf="success" class="success-message">
+          <mat-icon>check_circle</mat-icon>
+          {{ success }}
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Kullanıcı Adı</mat-label>
+          <input matInput [(ngModel)]="username" name="username" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Şifre</mat-label>
+          <input matInput [(ngModel)]="password" name="password" type="password" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-posta (İsteğe Bağlı)</mat-label>
+          <input matInput [(ngModel)]="email" name="email" type="email">
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="full-width">
+          {{ isLoading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol' }}
+        </button>
+
+        <p class="login-link">
+          Zaten hesabınız var mı? <a (click)="goToLogin()">Giriş Yapın</a>
+        </p>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
