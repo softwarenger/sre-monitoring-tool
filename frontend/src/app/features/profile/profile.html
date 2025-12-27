@@ -1,0 +1,80 @@
+<div class="profile-container">
+  <div class="profile-grid">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'profile.title' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'profile.subtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="saveProfile()" class="profile-form">
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'profile.username' | translate }}</mat-label>
+              <input matInput [value]="username" disabled>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'profile.fullName' | translate }}</mat-label>
+              <input matInput [(ngModel)]="fullName" name="fullName" [placeholder]="'profile.fullNamePlaceholder' | translate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'profile.email' | translate }}</mat-label>
+              <input matInput [(ngModel)]="email" name="email" type="email" [placeholder]="'profile.emailPlaceholder' | translate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'profile.avatarUrl' | translate }}</mat-label>
+              <input matInput [(ngModel)]="avatarUrl" name="avatarUrl" [placeholder]="'profile.avatarUrlPlaceholder' | translate">
+            </mat-form-field>
+          </div>
+
+          <div class="button-group">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              {{ 'button.save' | translate }}
+            </button>
+            <button mat-stroked-button type="button" (click)="openPreferences()">
+              <mat-icon>settings</mat-icon>
+              {{ 'button.preferences' | translate }}
+            </button>
+          </div>
+
+          <div class="message" *ngIf="success">
+            <mat-icon>check_circle</mat-icon>
+            {{ success }}
+          </div>
+          <div class="error" *ngIf="error">
+            <mat-icon>error</mat-icon>
+            {{ error }}
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="password-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'password.title' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'password.subtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="changePassword()" class="password-form">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'password.old' | translate }}</mat-label>
+            <input matInput [(ngModel)]="oldPassword" name="oldPassword" type="password">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'password.new' | translate }}</mat-label>
+            <input matInput [(ngModel)]="newPassword" name="newPassword" type="password">
+          </mat-form-field>
+
+          <button mat-raised-button color="accent" type="submit" class="full-width">
+            <mat-icon>vpn_key</mat-icon>
+            {{ 'password.update' | translate }}
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

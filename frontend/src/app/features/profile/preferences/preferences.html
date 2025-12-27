@@ -1,0 +1,49 @@
+<div class="prefs-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ 'preferences.title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'preferences.subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content *ngIf="prefs as p">
+      <div class="row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'preferences.language' | translate }}</mat-label>
+          <mat-select [(ngModel)]="p.language" name="language">
+            <mat-option *ngFor="let lang of languages" [value]="lang.value">
+              {{ lang.label }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>{{ 'preferences.languageHint' | translate }}</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'preferences.timezone' | translate }}</mat-label>
+          <mat-select [(ngModel)]="p.timezone" name="timezone">
+            <mat-option *ngFor="let tz of timezones" [value]="tz.value">
+              {{ tz.label }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>{{ 'preferences.timezoneHint' | translate }}</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="button-row">
+        <button mat-raised-button color="primary" (click)="save()">
+          <mat-icon>save</mat-icon>
+          {{ 'button.save' | translate }}
+        </button>
+      </div>
+
+      <div class="message success" *ngIf="success">
+        <mat-icon>check_circle</mat-icon>
+        {{ success }}
+      </div>
+      <div class="message error" *ngIf="error">
+        <mat-icon>error</mat-icon>
+        {{ error }}
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
